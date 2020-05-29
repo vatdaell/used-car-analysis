@@ -1,17 +1,20 @@
 from urllib.request import urlopen
 import urllib.parse as urlparse
 from urllib.parse import parse_qs
-from bs4 import BeautifulSoup 
+from bs4 import BeautifulSoup
 import re
 import csv
+
 
 def get_page_urls(url):
     base_url = "https://www.kijiji.ca"
     html = urlopen(url)
     bs = BeautifulSoup(html, 'html.parser')
-    links = bs.findAll('a', attrs={'href': re.compile("/v-cars-trucks/city-of-toronto/*/[1-9]*")})
-    links = list(map(lambda x: "{}{}".format(base_url,x['href']), links))
-    return links 
+    links = bs.findAll('a', attrs={'href': re.compile(
+        "/v-cars-trucks/city-of-toronto/*/[1-9]*")})
+    links = list(map(lambda x: "{}{}".format(base_url, x['href']), links))
+    return links
+
 
 def get_details(url):
     data = dict({})
@@ -29,12 +32,13 @@ def get_details(url):
     data['trailerhitch'] = 0
     data['url'] = url
     try:
-        data['title'] = bs.find('h1',{'class':'title-2323565163','itemprop':'name'}).text
+        data['title'] = bs.find(
+            'h1', {'class': 'title-2323565163', 'itemprop': 'name'}).text
     except:
         data['title'] = None
 
     try:
-        data['price'] = bs.find('span',itemprop='price').text
+        data['price'] = bs.find('span', itemprop='price').text
     except:
         data['price'] = None
 
@@ -47,8 +51,8 @@ def get_details(url):
         data['year'] = bs.find(itemprop='vehicleModelDate').text
     except:
         data['year'] = None
-    
-    try: 
+
+    try:
         data['make'] = bs.find(itemprop='brand').text
     except:
         data['make'] = None
@@ -104,7 +108,8 @@ def get_details(url):
         data['description'] = None
 
     try:
-        data['carfax'] = bs.find('a', {'class':'attributeLink-387024144'})['href']
+        data['carfax'] = bs.find(
+            'a', {'class': 'attributeLink-387024144'})['href']
         parsed = urlparse.urlparse(data['carfax'])
         data['vin'] = parse_qs(parsed.query)['vin'][0]
     except:
@@ -121,7 +126,7 @@ def get_details(url):
 
         if "Air conditioning" in includes:
             data['aircondition'] = 1
-        
+
         if "Navigation system" in includes:
             data['nav'] = 1
 
@@ -130,10 +135,10 @@ def get_details(url):
 
         if "Push button start" in includes:
             data['pushstart'] = 1
-        
+
         if "Parking assistant" in includes:
             data['parkingassist'] = 1
-        
+
         if "Cruise control" in includes:
             data['cruisecontrol'] = 1
 
@@ -145,13 +150,15 @@ def get_details(url):
 
     return data
 
+
 def main():
-    MAIN_DATA= []
+    MAIN_DATA = []
     csv_file = "extractedData.csv"
     for i in range(100):
         print("Page:{}".format(i+1))
-        url = "https://www.kijiji.ca/b-cars-trucks/city-of-toronto/page-{}/c174l1700273?ad=offering&for-sale-by=ownr".format(i+1)
-        for index,page in enumerate(get_page_urls(url)):
+        url = "https://www.kijiji.ca/b-cars-trucks/city-of-toronto/page-{}/c174l1700273?ad=offering&for-sale-by=ownr".format(
+            i+1)
+        for index, page in enumerate(get_page_urls(url)):
             print("Ad:{}".format(index+1))
             extracted = get_details(page)
             MAIN_DATA.append(extracted)
