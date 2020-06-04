@@ -66,4 +66,4 @@ scraping/*.pkl
 
 *.csv
 
-scraping/*.json
+scrapers/*.json
