@@ -1,5 +1,6 @@
 # Used Car Price Estimator Overview
 The following is an overview, the full analysis is <a href="https://github.com/vatdaell/used-car-analysis/blob/master/Analysis%20of%20Car%20Prices.ipynb">here</a>
+* Created a used car price prediction model with average pricing error ~$1.53 
 * Scraped Kijiji.ca for used car listings for car make, model, features and asking prices
 * Cleaned the data and imputed missing data using model specification data
 * Made the data available for use on <a href="https://www.kaggle.com/vatdaell/kijiji-cars-dataset">Kaggle</a>
